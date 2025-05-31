@@ -33,6 +33,9 @@ $result = $conn->query($sql);
                     <li class="nav-item">
                         <a class="nav-link" href="produtos.php">Produtos</a>
                     </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" href="estoque.php">Abaixo do estoque</a>
+                    </li>
                 </ul>
             </div>
         </div>
