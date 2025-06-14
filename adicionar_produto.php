@@ -1,6 +1,12 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
+session_start();
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_logado'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Inicializa variáveis
 $nome = $quantidade = $preco = "";
@@ -19,7 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sid", $nome, $quantidade, $preco);
 
         if ($stmt->execute()) {
-            $mensagem = "Produto inserido com sucesso!";
+            header("Location: produtos.php");
+            exit();
         } else {
             $mensagem = "Erro ao inserir produto: " . $conn->error;
         }

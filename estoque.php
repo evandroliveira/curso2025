@@ -1,9 +1,16 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
+// Inicia a sessão
+session_start();
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_logado'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Consulta produtos com quantidade menor que 10
-$sql = "SELECT id, nome, quantidade FROM produtos WHERE quantidade < 10";
+$sql = "SELECT * FROM baixo_estoque";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>

@@ -1,6 +1,13 @@
 <?php
 // Inclui o arquivo de configuração para conectar ao banco de dados
 require_once 'config.php';
+// Inicia a sessão
+session_start();
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_logado'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Consulta para buscar todos os produtos
 $sql = "SELECT * FROM produtos";

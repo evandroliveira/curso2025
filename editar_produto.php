@@ -1,6 +1,12 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
+session_start();
+// Verifica se o usuário está logado   
+if (!isset($_SESSION['usuario_logado'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Verifica se o ID do produto foi passado
 if (!isset($_GET['id'])) {
@@ -38,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $produto['nome'] = $nome;
         $produto['preco'] = $preco;
         $produto['quantidade'] = $quantidade;
+        header("Location: produtos.php");
+        exit;
     } else {
         echo "Erro ao atualizar o produto.";
     }
