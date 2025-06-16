@@ -22,20 +22,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$name_err && !$email_err && !$senha_err) {
 
-        // Chama a procedure inserir_usuario(nome, email, senha)
-        $stmt = $conn->prepare("CALL inserir_usuario(?, ?, ?)");
-        $hashed_senha = password_hash($senha, PASSWORD_DEFAULT);
-        $stmt->bind_param("sss", $name, $email, $hashed_senha);
+        // Chama a procedure add_usuario(nome, email, senha)
+        $stmt = $pdo->prepare("CALL add_usuario(?, ?, ?)");
+        $stmt->execute([$name, $email, $senha]);
 
-        if ($stmt->execute()) {
+        if ($stmt) {
             $register_success = "Usuário cadastrado com sucesso!";
             $name = $email = $senha = '';
             header("Location: login.php"); // Redireciona para a página de login após o cadastro
         } else {
-            $register_success = "Erro ao cadastrar: " . $conn->error;
+            $register_success = "Erro ao cadastrar: " . $pdo->errorInfo()[2];
         }
-        $stmt->close();
-        $conn->close();
+        //$stmt->close();
+        //$conn->close();
     }
 }
 ?>
