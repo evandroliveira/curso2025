@@ -1,12 +1,12 @@
 <?php
 require 'config.php';
 //criar session_start 
-session_start();
+/*session_start();
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_logado'])) {
     header("Location: login.php");
     exit();
-}
+}*/
 
 ?>
 <!DOCTYPE html>
@@ -38,6 +38,8 @@ if (!isset($_SESSION['usuario_logado'])) {
                     <li class="nav-item"> 
                         <a class="nav-link" href="estoque.php">Abaixo do estoque</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.php">Sair</a>
                 </ul>
             </div>
         </div>
@@ -49,21 +51,21 @@ if (!isset($_SESSION['usuario_logado'])) {
 
         // Consulta para obter quantidade e valor total dos produtos
         $sql = "SELECT COUNT(*) AS quantidade, SUM(total) AS total FROM produtos";
-        $result = $conn->query($sql);
-        $row = $result->fetch_assoc();
+        $result = $pdo->query($sql);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
         $quantidade = $row['quantidade'] ?? 0;
         $total_valor = $row['total'] ?? 0;
 
         // Consulta para obter os valores individuais dos produtos (para gráfico de barras)
         $sql2 = "SELECT nome, preco FROM produtos";
-        $result2 = $conn->query($sql2);
+        $result2 = $pdo->query($sql2);
         $nomes = [];
         $valores = [];
-        while ($r = $result2->fetch_assoc()) {
+        while ($r = $result2->fetch(PDO::FETCH_ASSOC)) {
             $nomes[] = $r['nome'];
             $valores[] = $r['preco'];
         }
-        $conn->close();
+        //$conn->close();
         ?>
 
         <div class="row mb-4">

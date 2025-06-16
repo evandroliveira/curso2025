@@ -1,17 +1,17 @@
 <?php
 // Inclui o arquivo de configuração para conectar ao banco de dados
 require_once 'config.php';
-// Inicia a sessão
+/* Inicia a sessão
 session_start();
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_logado'])) {
     header("Location: login.php");
     exit();
-}
+}*/
 
 // Consulta para buscar todos os produtos
 $sql = "SELECT * FROM produtos";
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
 ?>
 <!DOCTYPE html>
 <html>
@@ -63,8 +63,8 @@ $result = $conn->query($sql);
         </thead>
         <tbody>
             <!-- Os botões serão adicionados nas linhas dos produtos abaixo -->
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while($row = $result->fetch_assoc()): ?>
+        <?php if ($result && $result->rowCount() > 0): ?>
+            <?php while($row = $result->fetch(PDO::FETCH_ASSOC)): ?>
                 <tr>
                     
                     <td><?php echo htmlspecialchars($row['id']); ?></td>
@@ -89,5 +89,5 @@ $result = $conn->query($sql);
 </body>
 </html>
 <?php
-$conn->close();
+//$conn->close();
 ?>

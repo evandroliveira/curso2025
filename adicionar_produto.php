@@ -1,12 +1,13 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
+/*
 session_start();
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_logado'])) {
     header("Location: login.php");
     exit();
-}
+}*/
 
 // Inicializa variáveis
 $nome = $quantidade = $preco = "";
@@ -21,16 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validação simples
     if ($nome && $quantidade > 0 && $preco > 0) {
         // Prepara e executa a inserção no banco de dados
-        $stmt = $conn->prepare("INSERT INTO produtos (nome, quantidade, preco) VALUES (?, ?, ?)");
-        $stmt->bind_param("sid", $nome, $quantidade, $preco);
+        $stmt = $pdo->prepare("INSERT INTO produtos (nome, quantidade, preco) VALUES (?, ?, ?)");
+        $stmt->execute([$nome, $quantidade, $preco]);
 
-        if ($stmt->execute()) {
+        if ($stmt) {
             header("Location: produtos.php");
             exit();
         } else {
-            $mensagem = "Erro ao inserir produto: " . $conn->error;
+            $mensagem = "Erro ao inserir produto: " . $pdo->errorInfo()[2];
         }
-        $stmt->close();
     } else {
         $mensagem = "Preencha todos os campos corretamente.";
     }

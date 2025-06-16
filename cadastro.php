@@ -1,58 +1,41 @@
 <?php
 require_once 'config.php';
-
-$name = $email = $password = '';
-$name_err = $email_err = $password_err = $register_success = '';
+$register_success = '';
+$name = $email = $senha = '';
+$name_err = $email_err = $senha_err = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Nome
-    $name = trim($_POST["nome"]);
+    // Recebe e valida os dados
+    $name = trim($_POST["name"] ?? '');
+    $email = trim($_POST["email"] ?? '');
+    $senha = trim($_POST["senha"] ?? '');
+
     if (empty($name)) {
-        $name_err = "Por favor, insira seu nome.";
+        $name_err = "Informe o nome.";
+    }
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email_err = "Informe um e-mail válido.";
+    }
+    if (empty($senha) || strlen($senha) < 6) {
+        $senha_err = "A senha deve ter pelo menos 6 caracteres.";
     }
 
-    // Email
-    $email = trim($_POST["email"]);
-    if (empty($email)) {
-        $email_err = "Por favor, insira seu email.";
-    } else {
-        // Verifica se o email já existe
-        $sql = "SELECT id FROM usuarios WHERE email = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $stmt->store_result();
-            if ($stmt->num_rows > 0) {
-                $email_err = "Este email já está cadastrado.";
-            }
-            $stmt->close();
+    if (!$name_err && !$email_err && !$senha_err) {
+
+        // Chama a procedure inserir_usuario(nome, email, senha)
+        $stmt = $conn->prepare("CALL inserir_usuario(?, ?, ?)");
+        $hashed_senha = password_hash($senha, PASSWORD_DEFAULT);
+        $stmt->bind_param("sss", $name, $email, $hashed_senha);
+
+        if ($stmt->execute()) {
+            $register_success = "Usuário cadastrado com sucesso!";
+            $name = $email = $senha = '';
+            header("Location: login.php"); // Redireciona para a página de login após o cadastro
         } else {
-            $email_err = "Erro ao verificar o email. Tente novamente.";
+            $register_success = "Erro ao cadastrar: " . $conn->error;
         }
-    }
-
-    // Senha
-    $password = $_POST["senha"];
-    if (empty($password)) {
-        $password_err = "Por favor, insira uma senha.";
-    } elseif (strlen($password) < 6) {
-        $password_err = "A senha deve ter pelo menos 6 caracteres.";
-    }
-
-    // Se não houver erros, insere no banco
-    if (empty($name_err) && empty($email_err) && empty($password_err) ) {
-        $sql = "INSERT INTO usuarios (nome, email, senha, confirma_senha) VALUES (?, ?, ?)";
-        if ($stmt = $conn->prepare($sql)) {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt->bind_param("ssss", $name, $email, $hash);
-            if ($stmt->execute()) {
-                $register_success = "Cadastro realizado com sucesso!";
-                header("Location: index.php"); // Redireciona para a página de login após o cadastro
-            } else {
-                $register_success = "Erro ao cadastrar. Tente novamente.";
-            }
-            $stmt->close();
-        }
+        $stmt->close();
+        $conn->close();
     }
 }
 ?>
@@ -88,11 +71,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="invalid-feedback"><?= $email_err ?></div>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Senha</label>
+                            <label for="senha" class="form-label">Senha</label>
                             <div class="input-group">
-                                <input type="password" name="password" id="password" class="form-control <?= $password_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($password) ?>">
-                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('password')">Mostrar</button>
-                                <div class="invalid-feedback"><?= $password_err ?></div>
+                                <input type="senha" name="senha" id="senha" class="form-control <?= $senha_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($senha) ?>">
+                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('senha')">Mostrar</button>
+                                <div class="invalid-feedback"><?= $senha_err ?></div>
                             </div>
                         </div>
                         

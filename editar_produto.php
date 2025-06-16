@@ -1,12 +1,14 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
+/*
 session_start();
+// Inicia a sessão
 // Verifica se o usuário está logado   
 if (!isset($_SESSION['usuario_logado'])) {
     header("Location: login.php");
     exit();
-}
+}*/
 
 // Verifica se o ID do produto foi passado
 if (!isset($_GET['id'])) {
@@ -17,11 +19,9 @@ if (!isset($_GET['id'])) {
 $id = intval($_GET['id']);
 
 // Busca os dados do produto
-$stmt = $conn->prepare("SELECT * FROM produtos WHERE id = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$produto = $result->fetch_assoc();
+$stmt = $pdo->prepare("SELECT * FROM produtos WHERE id = ?");
+$stmt->execute([$id]);
+$produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$produto) {
     echo "Produto não encontrado.";
@@ -35,10 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quantidade = intval($_POST['quantidade']);
     $total = $preco * $quantidade;
 
-    $stmt = $conn->prepare("UPDATE produtos SET nome=?, preco=?, quantidade=?, total=? WHERE id=?");
-    $stmt->bind_param("sdddi", $nome, $preco, $quantidade, $total, $id);
+    $stmt = $pdo->prepare("UPDATE produtos SET nome=?, preco=?, quantidade=?, total=? WHERE id=?");
+    $stmt->execute([$nome, $preco, $quantidade, $total, $id]);
 
-    if ($stmt->execute()) {
+    if ($stmt) {
         echo "Produto atualizado com sucesso!";
         // Atualiza os dados exibidos
         $produto['nome'] = $nome;
