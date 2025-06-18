@@ -1,8 +1,8 @@
 <?php
 // Chama o arquivo de configuração
 require_once 'config.php';
-/*
-session_start();
+
+/*session_start();
 // Verifica se o usuário está logado
 if (!isset($_SESSION['usuario_logado'])) {
     header("Location: login.php");

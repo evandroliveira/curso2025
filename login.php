@@ -1,37 +1,43 @@
 <?php
-// Inclui o arquivo de configuração
-require_once 'config.php';
+session_start();
+require 'config.php';
 
-// Inicializa variáveis
-$email = $senha = '';
-$erro = '';
+$_SESSION['lg'] = '';
 
-// Processa o formulário quando enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$email = trim($_POST['email'] ?? '');
-	$senha = $_POST['senha'] ?? '';
+if(isset($_POST['email']) && !empty($_POST['email'])) {
+	$email = $_POST['email'];
+	$senha = $_POST['senha'];
 	
-	if (!empty($senha) && !empty($email)) {
+
+	$sql = "SELECT * FROM usuarios WHERE email = :email AND senha = :senha";
+	$sql = $pdo->prepare($sql);
+	$sql->bindValue(":email", $email);
+	$sql->bindValue(":senha", $senha);
+	$sql->execute();
+	
+
+	if($sql->rowCount() > 0) {
+		$sql = $sql->fetch();
+		$id = $sql['id'];
+		$ip = $_SERVER['REMOTE_ADDR'];
 		
-			// Prepara a consulta SQL
-			$stmt = $pdo->prepare('SELECT * FROM usuarios WHERE email = :email AND senha = :senha');
-			$stmt->bindParam(':email', $email);
-			$stmt->bindParam(':senha', $senha);
-			$stmt->execute();
-			
-			// Verifica se o usuário foi encontrado
-			if ($stmt->rowCount() > 0) {
-				//session_start();
-				//$_SESSION['usuario'] = $stmt->fetch(PDO::FETCH_ASSOC);
-			
-				header('Location: index.php'); // Redireciona para a página do dashboard
-				exit;
-			} else {
-				$erro = 'E-mail ou senha inválidos.';
-			}
+
+		$_SESSION['lg'] = $id;
 		
+		$sql = "UPDATE usuarios SET ip = :ip WHERE id = :id";
+		
+		$sql = $pdo->prepare($sql);
+		
+		$sql->bindValue(":ip", $ip);
+		$sql->bindValue(":id", $id);
+		$sql->execute();
+
+		header("Location: index.php");
+		exit;
 	}
-}
+	
+} 
+
 
 ?>
 
@@ -49,13 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<div class="card shadow">
 					<div class="card-body">
 						<h4 class="card-title mb-4 text-center">Login</h4>
-						<?php if ($erro): ?>
-							<div class="alert alert-danger"><?= htmlspecialchars($erro) ?></div>
-						<?php endif; ?>
-						<form method="post" autocomplete="off">
+						
+						<form method="post" autocomplete="on">
 							<div class="mb-3">
 								<label for="email" class="form-label">E-mail</label>
-								<input type="email" class="form-control" id="email" name="email" required value="<?= htmlspecialchars($email) ?>">
+								<input type="email" class="form-control" id="email" name="email" ">
 							</div>
 							<div class="mb-3">
 								<label for="senha" class="form-label">Senha</label>

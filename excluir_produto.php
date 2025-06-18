@@ -1,13 +1,25 @@
 <?php
-// Inclui o arquivo de configuração com a conexão ao banco de dados
-require_once 'config.php';
-/* Inicia a sessão
 session_start();
-// Verifica se o usuário está logado
-if (!isset($_SESSION['usuario_logado'])) {
-    header("Location: login.php");
-    exit();
-}*/
+require 'config.php';
+
+if(empty($_SESSION['lg'])) {
+	header("Location: login.php");
+	exit;
+} else {
+	$id = $_SESSION['lg'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+
+	$sql = "SELECT * FROM usuarios WHERE id = :id AND ip = :ip";
+	$sql = $pdo->prepare($sql);
+	$sql->bindValue(":id", $id);
+	$sql->bindValue(":ip", $ip);
+	$sql->execute();
+
+	if($sql->rowCount() == 0) {
+		header("Location: login.php");
+		exit;
+	}
+}
 
 // Verifica se o ID do produto foi enviado via GET
 if (isset($_GET['id'])) {
