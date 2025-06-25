@@ -1,16 +1,15 @@
 <?php
 require_once 'config.php';
 $register_success = '';
-$name = $email = $senha = '';
-$name_err = $email_err = $senha_err = '';
+ $email = $senha = '';
+$email_err = $senha_err = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recebe e valida os dados
-    $name = trim($_POST["name"] ?? '');
     $email = trim($_POST["email"] ?? '');
     $senha = trim($_POST["senha"] ?? '');
 
-    if (empty($name)) {
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $name_err = "Informe o nome.";
     }
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -22,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$name_err && !$email_err && !$senha_err) {
 
-        // Chama a procedure add_usuario(nome, email, senha)
-        $stmt = $pdo->prepare("CALL add_usuario(?, ?, ?)");
-        $stmt->execute([$name, $email, $senha]);
+        // Chama a procedure add_usuarios(email, senha)
+        $stmt = $pdo->prepare("CALL add_usuarios(?, ?)");
+        $stmt->execute([$email, $senha]);
 
         if ($stmt) {
             $register_success = "Usuário cadastrado com sucesso!";

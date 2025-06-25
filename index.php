@@ -51,6 +51,9 @@ if(empty($_SESSION['lg'])) {
                     <li class="nav-item"> 
                         <a class="nav-link" href="estoque.php">Abaixo do estoque</a>
                     </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" href="cad_cliente.php">Cadastro de Clientes</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php">Sair</a>
                 </ul>
