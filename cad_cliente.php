@@ -57,18 +57,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Tabela de clientes -->
         <table class="table table-bordered">
+            <!-- Removido as colunas Sexo, Nascimento e Endereço -->
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Email</th>
                     <th>Celular</th>
-                    <th>Nascimento</th>
-                    <th>Endereço</th>
                     <th>Cidade</th>
                     <th>Estado</th>
                     <th>CEP</th>
-                    <th>Sexo</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -82,12 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "<td>{$row['nome']}</td>";
                     echo "<td>{$row['email']}</td>";
                     echo "<td>{$row['celular']}</td>";
-                    echo "<td>{$row['nascimento']}</td>";
-                    echo "<td>{$row['endereco']}</td>";
                     echo "<td>{$row['cidade']}</td>";
                     echo "<td>{$row['estado']}</td>";
                     echo "<td>{$row['cep']}</td>";
-                    echo "<td>{$row['sexo']}</td>";
                     echo "<td>
                         <a href='editar_cliente.php?id={$row['id']}' class='btn btn-warning btn-sm'>Alterar</a>
                         <a href='excluir_cliente.php?id={$row['id']}' class='btn btn-danger btn-sm' onclick=\"return confirm('Tem certeza que deseja excluir?')\">Excluir</a>
@@ -96,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 ?>
             </tbody>
+            
         </table>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -121,6 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mb-2">
                     <label>Nome</label>
                     <input type="text" name="nome" class="form-control" required>
+                </div>
+                 <div class="mb-2">
+                    <label>Sexo</label>
+                    <select name="sexo" class="form-control" required>
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
+                    </select>
                 </div>
                 <div class="mb-2">
                     <label>Email</label>
@@ -150,15 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>CEP</label>
                     <input type="text" name="cep" class="form-control" required>
                 </div>
-                <div class="mb-2">
-                    <label>Sexo</label>
-                    <select name="sexo" class="form-control" required>
-                        <option value="">Selecione</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Feminino</option>
-                        <option value="O">Outro</option>
-                    </select>
-                </div>
+               
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

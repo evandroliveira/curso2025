@@ -116,8 +116,8 @@ if(empty($_SESSION['lg'])) {
                 datasets: [{
                     label: 'Valor (R$)',
                     data: valores,
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(229, 54, 6, 0.6)',
+                    borderColor: 'rgb(83, 4, 4)',
                     borderWidth: 1
                 }]
             },

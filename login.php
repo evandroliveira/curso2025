@@ -34,6 +34,9 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
 
 		header("Location: index.php");
 		exit;
+	} else {
+		$_SESSION['lg'] = '';
+		echo "<script>alert('E-mail ou senha incorretos!');</script>";
 	}
 	
 } 

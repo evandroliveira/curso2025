@@ -56,7 +56,6 @@ $fornecedores = getFornecedores($pdo);
         <thead class="table-dark">
             <tr>
                 <th>Nome</th>
-                <th>CNPJ</th>
                 <th>Telefone</th>
                 <th>Email</th>
                 <th>Endereço</th>
@@ -71,7 +70,6 @@ $fornecedores = getFornecedores($pdo);
             <?php foreach ($fornecedores as $f): ?>
             <tr>
                 <td><?= htmlspecialchars($f['nome']) ?></td>
-                <td><?= htmlspecialchars($f['cnpj']) ?></td>
                 <td><?= htmlspecialchars($f['telefone']) ?></td>
                 <td><?= htmlspecialchars($f['email']) ?></td>
                 <td><?= htmlspecialchars($f['endereco']) ?></td>
@@ -87,13 +85,22 @@ $fornecedores = getFornecedores($pdo);
             <?php endforeach; ?>
         </tbody>
     </table>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('input[name="cep"]').mask('00000-000');
+    });
+    $(document).ready(function(){
+        $('input[name="celular"]').mask('(00) 00000-0000');
+    });
+    </script>
     <!-- Botão para abrir modal -->
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovoFornecedor">
         Novo Fornecedor
     </button>
 
-    <!-- Modal de cadastro -->
+    
     <div class="modal fade" id="modalNovoFornecedor" tabindex="-1" aria-labelledby="modalNovoFornecedorLabel" aria-hidden="true">
       <div class="modal-dialog">
         <form method="post" class="modal-content">
@@ -148,16 +155,17 @@ $fornecedores = getFornecedores($pdo);
       </div>
     </div>
 </div>
+<!-- Modal de cadastro -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('input[name="cep"]').mask('00000-000');
+    });
+    $(document).ready(function(){
+        $('input[name="celular"]').mask('(00) 00000-0000');
+    });
+    </script>
 
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.mask.min.js"></script>
-<script>
-$(function(){
-    $('#cnpj').mask('00.000.000/0000-00');
-    $('#telefone').mask('(00) 00000-0000');
-    $('#cep').mask('00000-000');
-});
-</script>
 </body>
 </html>
