@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'config.php';
+require 'menu.html';
 
 if(empty($_SESSION['lg'])) {
 	header("Location: login.php");
@@ -20,7 +21,6 @@ if(empty($_SESSION['lg'])) {
 		exit;
 	}
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -32,39 +32,42 @@ if(empty($_SESSION['lg'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curso 2025</title>
 </head>
-<body style="background-image: url('imagens/fundo.jpg'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+<body >
     
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Curso 2025</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="adicionar_produto.php">Adicionar Produto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="produtos.php">Produtos</a>
-                    </li>
-                    <li class="nav-item"> 
-                        <a class="nav-link" href="estoque.php">Abaixo do estoque</a>
-                    </li>
-                    <li class="nav-item"> 
-                        <a class="nav-link" href="cad_cliente.php">Cadastro de Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.php">Sair</a>
-                </ul>
-            </div>
-        </div>
-    </nav>
+
     <div class="container bg-light p-4 rounded">
         <h2 class="mb-4">Resumo dos Produtos</h2>
         <?php
         
+        echo '<div class="row mb-4">';
+        echo '  <div class="col-md-6">';
+        echo '    <h4>Resumo de Fornecedores</h4>';
+        $sql_fornecedores = "SELECT COUNT(*) AS total_fornecedores FROM fornecedores";
+        $result_fornecedores = $pdo->query($sql_fornecedores);
+        $row_fornecedores = $result_fornecedores->fetch(PDO::FETCH_ASSOC);
+        $total_fornecedores = $row_fornecedores['total_fornecedores'] ?? 0;
+        echo '    <div class="alert alert-warning">';
+        echo '      <strong>Total de Fornecedores:</strong> ' . $total_fornecedores;
+        echo '    </div>';
 
+        
+        echo '</ul>';
+        echo '  </div>';
+
+        echo '  <div class="col-md-6">';
+        echo '    <h4>Resumo de Clientes</h4>';
+        $sql_clientes = "SELECT COUNT(*) AS total_clientes FROM clientes";
+        $result_clientes = $pdo->query($sql_clientes);
+        $row_clientes = $result_clientes->fetch(PDO::FETCH_ASSOC);
+        $total_clientes = $row_clientes['total_clientes'] ?? 0;
+        echo '    <div class="alert alert-primary">';
+        echo '      <strong>Total de Clientes:</strong> ' . $total_clientes;
+        echo '    </div>';
+
+        
+        echo '</ul>';
+        echo '  </div>';
+        echo '</div>';
         // Consulta para obter quantidade e valor total dos produtos
         $sql = "SELECT COUNT(*) AS quantidade, SUM(total) AS total FROM produtos";
         $result = $pdo->query($sql);

@@ -1,6 +1,7 @@
 <?php
-/session_start();
+session_start();
 require 'config.php';
+require 'menu.html';
 
 if(empty($_SESSION['lg'])) {
 	header("Location: login.php");
