@@ -1,7 +1,26 @@
 <?php
-// Inclui o arquivo de configuração do banco de dados
-require_once 'config.php';
-//Nome	Email	Celular	Nascimento	Endereço	Cidade	Estado	CEP	Sexo
+session_start();
+require 'config.php';
+require 'menu.php';
+
+if(empty($_SESSION['lg'])) {
+	header("Location: login.php");
+	exit;
+} else {
+	$id = $_SESSION['lg'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+
+	$sql = "SELECT * FROM usuarios WHERE id = :id AND ip = :ip";
+	$sql = $pdo->prepare($sql);
+	$sql->bindValue(":id", $id);
+	$sql->bindValue(":ip", $ip);
+	$sql->execute();
+
+	if($sql->rowCount() == 0) {
+		header("Location: login.php");
+		exit;
+	}
+}
 // Processa cadastro
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recebe e sanitiza os dados do formulário
@@ -46,8 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
-    <?php include 'menu.html'; ?>
-
     <div class="container mt-4">
         <h2>Clientes</h2>
         <!-- Botão para abrir o modal de cadastro -->

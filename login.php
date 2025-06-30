@@ -36,7 +36,8 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
 		exit;
 	} else {
 		$_SESSION['lg'] = '';
-		echo "<script>alert('E-mail ou senha incorretos!');</script>";
+		header("Location: login.php");
+		exit;
 	}
 	
 } 
@@ -62,7 +63,7 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
 						<form method="post" autocomplete="on">
 							<div class="mb-3">
 								<label for="email" class="form-label">E-mail</label>
-								<input type="email" class="form-control" id="email" name="email" ">
+								<input type="email" class="form-control" id="email" name="email" required>
 							</div>
 							<div class="mb-3">
 								<label for="senha" class="form-label">Senha</label>

@@ -1,7 +1,26 @@
 <?php
-// Inclui o arquivo de configuração com a conexão PDO
-require_once 'config.php';
-require 'menu.html';
+session_start();
+require 'config.php';
+require 'menu.php';
+
+if(empty($_SESSION['lg'])) {
+	header("Location: login.php");
+	exit;
+} else {
+	$id = $_SESSION['lg'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+
+	$sql = "SELECT * FROM usuarios WHERE id = :id AND ip = :ip";
+	$sql = $pdo->prepare($sql);
+	$sql->bindValue(":id", $id);
+	$sql->bindValue(":ip", $ip);
+	$sql->execute();
+
+	if($sql->rowCount() == 0) {
+		header("Location: login.php");
+		exit;
+	}
+}
 
 // Função para buscar todos os fornecedores
 function getFornecedores($pdo) {
@@ -61,7 +80,6 @@ $fornecedores = getFornecedores($pdo);
                 <th>Endereço</th>
                 <th>Cidade</th>
                 <th>Estado</th>
-                <th>CEP</th>
                 <th>Data Cadastro</th>
                 <th class="table-actions">Ações</th>
             </tr>
@@ -75,7 +93,6 @@ $fornecedores = getFornecedores($pdo);
                 <td><?= htmlspecialchars($f['endereco']) ?></td>
                 <td><?= htmlspecialchars($f['cidade']) ?></td>
                 <td><?= htmlspecialchars($f['estado']) ?></td>
-                <td><?= htmlspecialchars($f['cep']) ?></td>
                 <td><?= htmlspecialchars($f['data_cadastro']) ?></td>
                 <td>
                     <a href="cad_fornecedor_editar.php?id=<?= $f['id'] ?>" class="btn btn-sm btn-primary">Alterar</a>
@@ -85,21 +102,23 @@ $fornecedores = getFornecedores($pdo);
             <?php endforeach; ?>
         </tbody>
     </table>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Botão para abrir modal -->
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovoFornecedor">
+        Novo Fornecedor
+    </button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
     $(document).ready(function(){
         $('input[name="cep"]').mask('00000-000');
     });
     $(document).ready(function(){
-        $('input[name="celular"]').mask('(00) 00000-0000');
+        $('input[name="telefone"]').mask('(00) 00000-0000');
+    });
+    $(document).ready(function(){
+        $('input[name="cnpj"]').mask('00.000.000/0000-00');
     });
     </script>
-    <!-- Botão para abrir modal -->
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNovoFornecedor">
-        Novo Fornecedor
-    </button>
-
     
     <div class="modal fade" id="modalNovoFornecedor" tabindex="-1" aria-labelledby="modalNovoFornecedorLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -155,17 +174,7 @@ $fornecedores = getFornecedores($pdo);
       </div>
     </div>
 </div>
-<!-- Modal de cadastro -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-    $(document).ready(function(){
-        $('input[name="cep"]').mask('00000-000');
-    });
-    $(document).ready(function(){
-        $('input[name="celular"]').mask('(00) 00000-0000');
-    });
-    </script>
+<script src="js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

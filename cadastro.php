@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require 'menu.html';
+require 'menu.php';
 $register_success = '';
  $email = $senha = '';
 $email_err = $senha_err = '';
@@ -10,9 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"] ?? '');
     $senha = trim($_POST["senha"] ?? '');
 
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $name_err = "Informe o nome.";
-    }
+   
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $email_err = "Informe um e-mail válido.";
     }
@@ -25,15 +23,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Chama a procedure add_usuarios(email, senha)
         $stmt = $pdo->prepare("CALL add_usuarios(?, ?)");
         $stmt->execute([$email, $senha]);
+        // Verifica se a inserção foi bem-sucedida
+         $register_success = '';
 
         if ($stmt) {
             $register_success = "Usuário cadastrado com sucesso!";
             $name = $email = $senha = '';
-            header("Location: login.php"); // Redireciona para a página de login após o cadastro
+            header("Location: index.php"); // Redireciona para a página de login após o cadastro
+            
         } else {
             $register_success = "Erro ao cadastrar: " . $pdo->errorInfo()[2];
         }
-        //$stmt->close();
+        $stmt->close();
         //$conn->close();
     }
 }
@@ -60,11 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
                     <form method="post" autocomplete="off">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nome</label>
-                            <input type="text" name="name" class="form-control <?= $name_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($name) ?>">
-                            <div class="invalid-feedback"><?= $name_err ?></div>
-                        </div>
-                        <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
                             <input type="email" name="email" class="form-control <?= $email_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($email) ?>">
                             <div class="invalid-feedback"><?= $email_err ?></div>
@@ -72,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="mb-3">
                             <label for="senha" class="form-label">Senha</label>
                             <div class="input-group">
-                                <input type="senha" name="senha" id="senha" class="form-control <?= $senha_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($senha) ?>">
+                                <input type="password" name="senha" id="senha" class="form-control <?= $senha_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($senha) ?>">
                                 <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('senha')">Mostrar</button>
                                 <div class="invalid-feedback"><?= $senha_err ?></div>
                             </div>

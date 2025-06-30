@@ -1,7 +1,7 @@
 <?php
 session_start();
 require 'config.php';
-require 'menu.html';
+require 'menu.php';
 
 if(empty($_SESSION['lg'])) {
 	header("Location: login.php");
@@ -33,8 +33,6 @@ if(empty($_SESSION['lg'])) {
     <title>Curso 2025</title>
 </head>
 <body >
-    
-
     <div class="container bg-light p-4 rounded">
         <h2 class="mb-4">Resumo dos Produtos</h2>
         <?php

@@ -1,14 +1,26 @@
 <?php
-// Chama o arquivo de configuração
-require_once 'config.php';
-require 'menu.html';
+session_start();
+require 'config.php';
+require 'menu.php';
 
-/*session_start();
-// Verifica se o usuário está logado
-if (!isset($_SESSION['usuario_logado'])) {
-    header("Location: login.php");
-    exit();
-}*/
+if(empty($_SESSION['lg'])) {
+	header("Location: login.php");
+	exit;
+} else {
+	$id = $_SESSION['lg'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+
+	$sql = "SELECT * FROM usuarios WHERE id = :id AND ip = :ip";
+	$sql = $pdo->prepare($sql);
+	$sql->bindValue(":id", $id);
+	$sql->bindValue(":ip", $ip);
+	$sql->execute();
+
+	if($sql->rowCount() == 0) {
+		header("Location: login.php");
+		exit;
+	}
+}
 
 // Inicializa variáveis
 $nome = $quantidade = $preco = "";
@@ -27,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([$nome, $quantidade, $preco]);
 
         if ($stmt) {
+           
             header("Location: produtos.php");
             exit();
         } else {

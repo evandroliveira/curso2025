@@ -1,6 +1,6 @@
 <?php
 require_once 'config.php';
-require 'menu.html';
+require 'menu.php';
 
 // Consulta todos os clientes
 $stmt = $pdo->query("SELECT * FROM clientes ORDER BY id DESC");
