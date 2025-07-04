@@ -56,6 +56,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['novo_fornecedor'])) {
 }
 
 $fornecedores = getFornecedores($pdo);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor'])) {
+    $stmt = $pdo->prepare("UPDATE fornecedores SET nome = ?, cnpj = ?, telefone = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ? WHERE id = ?");
+    $stmt->execute([
+        $_POST['nome'],
+        $_POST['cnpj'],
+        $_POST['telefone'],
+        $_POST['email'],
+        $_POST['endereco'],
+        $_POST['cidade'],
+        $_POST['estado'],
+        $_POST['cep'],
+        $_POST['id']
+    ]);
+    header("Location: cad_fornecedor.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -95,7 +112,62 @@ $fornecedores = getFornecedores($pdo);
                 <td><?= htmlspecialchars($f['estado']) ?></td>
                 <td><?= htmlspecialchars($f['data_cadastro']) ?></td>
                 <td>
-                    <a href="cad_fornecedor_editar.php?id=<?= $f['id'] ?>" class="btn btn-sm btn-primary">Alterar</a>
+                    <!-- Botão para abrir modal de edição -->
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarFornecedor<?= $f['id'] ?>">
+                        Editar
+                    </button>
+
+                    <!-- Modal de edição -->
+                    <div class="modal fade" id="modalEditarFornecedor<?= $f['id'] ?>" tabindex="-1" aria-labelledby="modalEditarFornecedorLabel<?= $f['id'] ?>" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <form method="post" class="modal-content">
+                          <input type="hidden" name="editar_fornecedor" value="1">
+                          <input type="hidden" name="id" value="<?= $f['id'] ?>">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalEditarFornecedorLabel<?= $f['id'] ?>">Editar Fornecedor</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="mb-2">
+                                <label>Nome</label>
+                                <input type="text" name="nome" class="form-control" required value="<?= htmlspecialchars($f['nome']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>CNPJ</label>
+                                <input type="text" name="cnpj" class="form-control" required value="<?= htmlspecialchars($f['cnpj']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>Telefone</label>
+                                <input type="text" name="telefone" class="form-control" required value="<?= htmlspecialchars($f['telefone']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control" required value="<?= htmlspecialchars($f['email']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>Endereço</label>
+                                <input type="text" name="endereco" class="form-control" required value="<?= htmlspecialchars($f['endereco']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>Cidade</label>
+                                <input type="text" name="cidade" class="form-control" required value="<?= htmlspecialchars($f['cidade']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>Estado</label>
+                                <input type="text" name="estado" class="form-control" maxlength="2" required value="<?= htmlspecialchars($f['estado']) ?>">
+                            </div>
+                            <div class="mb-2">
+                                <label>CEP</label>
+                                <input type="text" name="cep" class="form-control" required value="<?= htmlspecialchars($f['cep']) ?>">
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                     <a href="?excluir=<?= $f['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Excluir este fornecedor?')">Excluir</a>
                 </td>
             </tr>

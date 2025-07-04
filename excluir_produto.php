@@ -26,7 +26,7 @@ if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
 
     // Prepara a query para excluir o produto
-    $stmt = $pdo->prepare("DELETE FROM produtos WHERE id = ?");
+    $stmt = $pdo->prepare("CALL DeletarProduto(?)");
     $stmt->execute([$id]);
 
     if ($stmt) {

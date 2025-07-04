@@ -35,8 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sexo = trim($_POST['sexo']);
 
     // Prepara e executa a inserção no banco de dados
-    $sql = "INSERT INTO clientes (nome, email, celular, nascimento, endereco, cidade, estado, cep, sexo)
-            VALUES (:nome, :email, :celular, :nascimento, :endereco, :cidade, :estado, :cep, :sexo)";
+    $sql = "CALL add_clientes(:nome, :email, :celular, :nascimento, :endereco, :cidade, :estado, :cep, :sexo)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':nome', $nome);
     $stmt->bindParam(':email', $email);
@@ -101,7 +100,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo "<td>{$row['estado']}</td>";
                     echo "<td>{$row['cep']}</td>";
                     echo "<td>
-                        <a href='editar_cliente.php?id={$row['id']}' class='btn btn-warning btn-sm'>Alterar</a>
+                        <!-- Botão para abrir o modal de edição -->
+                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalEditarCliente{$row['id']}'>
+                            Editar
+                        </button>
+
+                        <!-- Modal de edição para este cliente -->
+                        <div class='modal fade' id='modalEditarCliente{$row['id']}' tabindex='-1' aria-labelledby='modalEditarClienteLabel{$row['id']}' aria-hidden='true'>
+                          <div class='modal-dialog'>
+                            <form method='post' action='cad_cliente.php' class='modal-content'>
+                              <input type='hidden' name='id' value='{$row['id']}'>
+                              <div class='modal-header'>
+                                <h5 class='modal-title' id='modalEditarClienteLabel{$row['id']}'>Editar Cliente</h5>
+                                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Fechar'></button>
+                              </div>
+                              <div class='modal-body'>
+                                <div class='mb-2'>
+                                    <label>Nome</label>
+                                    <input type='text' name='nome' class='form-control' value='{$row['nome']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Sexo</label>
+                                    <select name='sexo' class='form-control' required>
+                                        <option value=''>Selecione</option>
+                                        <option value='M' ".($row['sexo']=='M'?'selected':'').">Masculino</option>
+                                        <option value='F' ".($row['sexo']=='F'?'selected':'').">Feminino</option>
+                                        <option value='O' ".($row['sexo']=='O'?'selected':'').">Outro</option>
+                                    </select>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Email</label>
+                                    <input type='email' name='email' class='form-control' value='{$row['email']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Celular</label>
+                                    <input type='text' name='celular' class='form-control' value='{$row['celular']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Nascimento</label>
+                                    <input type='date' name='nascimento' class='form-control' value='{$row['nascimento']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Endereço</label>
+                                    <input type='text' name='endereco' class='form-control' value='{$row['endereco']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Cidade</label>
+                                    <input type='text' name='cidade' class='form-control' value='{$row['cidade']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>Estado</label>
+                                    <input type='text' name='estado' class='form-control' value='{$row['estado']}' required>
+                                </div>
+                                <div class='mb-2'>
+                                    <label>CEP</label>
+                                    <input type='text' name='cep' class='form-control' value='{$row['cep']}' required>
+                                </div>
+                              </div>
+                              <div class='modal-footer'>
+                                <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancelar</button>
+                                <button type='submit' class='btn btn-primary'>Salvar Alterações</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
                         <a href='excluir_cliente.php?id={$row['id']}' class='btn btn-danger btn-sm' onclick=\"return confirm('Tem certeza que deseja excluir?')\">Excluir</a>
                     </td>";
                     echo "</tr>";

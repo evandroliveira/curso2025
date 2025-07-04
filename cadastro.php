@@ -1,6 +1,5 @@
 <?php
 require_once 'config.php';
-require 'menu.php';
 $register_success = '';
  $email = $senha = '';
 $email_err = $senha_err = '';
