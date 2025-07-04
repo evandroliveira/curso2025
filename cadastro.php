@@ -1,15 +1,22 @@
 <?php
 require_once 'config.php';
 $register_success = '';
+ $nome = '';
+$nome_err = '';
+// Inicializa variáveis para e-mail e senha
  $email = $senha = '';
 $email_err = $senha_err = '';
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recebe e valida os dados
+    $nome = trim($_POST["nome"] ?? '');
     $email = trim($_POST["email"] ?? '');
     $senha = trim($_POST["senha"] ?? '');
 
-   
+    if (empty($nome)) {
+        $nome_err = "Informe seu nome.";
+    }
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $email_err = "Informe um e-mail válido.";
     }
@@ -17,11 +24,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $senha_err = "A senha deve ter pelo menos 6 caracteres.";
     }
 
+    // Verifica se o e-mail já está cadastrado
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    if ($stmt->fetchColumn() > 0) {
+        $email_err = "Este e-mail já está cadastrado.";
+    }
+
     if (!$name_err && !$email_err && !$senha_err) {
 
         // Chama a procedure add_usuarios(email, senha)
-        $stmt = $pdo->prepare("CALL add_usuarios(?, ?)");
-        $stmt->execute([$email, $senha]);
+        $stmt = $pdo->prepare("CALL add_usuario(?, ?, ?)");
+        $stmt->execute([$nome, $email, $senha]);
         // Verifica se a inserção foi bem-sucedida
          $register_success = '';
 
@@ -59,6 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="alert alert-info"><?= $register_success ?></div>
                     <?php endif; ?>
                     <form method="post" autocomplete="off">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" name="nome" class="form-control <?= $nome_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($nome) ?>">
+                            <div class="invalid-feedback"><?= $nome_err ?></div>
+                        </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail</label>
                             <input type="email" name="email" class="form-control <?= $email_err ? 'is-invalid' : '' ?>" value="<?= htmlspecialchars($email) ?>">

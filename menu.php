@@ -38,7 +38,9 @@
                         <a class="nav-link" href="login.php">Sair</a>
                 </ul>
 
-               
+            <span class="navbar-text ms-auto text-white">
+               <h3>Olá  <?php echo htmlspecialchars($_SESSION['nome']); ?>!</h3>
+            </span>
             </div>
         </div>
     </nav>

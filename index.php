@@ -8,8 +8,9 @@ if(empty($_SESSION['lg'])) {
 	exit;
 } else {
 	$id = $_SESSION['lg'];
+    $nome = $_SESSION['nome'];
 	$ip = $_SERVER['REMOTE_ADDR'];
-
+    
 	$sql = "SELECT * FROM usuarios WHERE id = :id AND ip = :ip";
 	$sql = $pdo->prepare($sql);
 	$sql->bindValue(":id", $id);

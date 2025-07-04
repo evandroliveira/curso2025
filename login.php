@@ -19,10 +19,13 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
 	if($sql->rowCount() > 0) {
 		$sql = $sql->fetch();
 		$id = $sql['id'];
+		$nome = $sql['nome'];
 		$ip = $_SERVER['REMOTE_ADDR'];
 		
-
+		
 		$_SESSION['lg'] = $id;
+		$_SESSION['nome'] = $nome;
+		
 		
 		$sql = "UPDATE usuarios SET ip = :ip WHERE id = :id";
 		
@@ -35,14 +38,8 @@ if(isset($_POST['email']) && !empty($_POST['email'])) {
 		header("Location: index.php");
 		exit;
 	} else {
-		
-		$_SESSION['lg'] = '';
-		
-		header("Location: login.php");
-		exit;
+		echo "<script>alert('E-mail ou senha incorretos.');</script>";
 	}
-} else {
-	echo "<script>alert('E-mail ou senha incorretos.');</script>";
 }
 
 ?>
