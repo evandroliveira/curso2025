@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro de Clientes</title>
+    <title>Cadastro de Clientes</title> 
     <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
